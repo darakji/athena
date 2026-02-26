@@ -5,7 +5,7 @@ NGPU = 4
 groups = [[] for _ in range(NGPU)]
 loads = [0]*NGPU
 
-with open("atom_counts.csv") as f:
+with open("/home/mehuldarak/athena/polaris/scripts/atom_counts.csv") as f:
     rows = [(r[0], int(r[1])) for r in csv.reader(f)]
 
 for name, nat in sorted(rows, key=lambda x: -x[1]):

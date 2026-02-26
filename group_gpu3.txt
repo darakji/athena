@@ -1,0 +1,3 @@
+Li_110_slab__LLZO_001_Zr_code93_sto_bestgap_2.50A_r.cif
+Li_110_slab__LLZO_011_La_code71_sto_bestgap_2.50A_r.cif
+Li_100_slab__LLZO_011_La_code71_sto_bestgap_3.00A_r.cif
