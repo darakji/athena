@@ -43,7 +43,7 @@ mkdir -p ${OUT_BASE}/logs
 # Run SINGLE CIF on SINGLE GPU (pilot)
 # -------------------------------------------------
 # Pick one representative CIF
-TEST_CIF=LLZO_010_Li100_order0.cif
+TEST_CIF=Li_100_slab__LLZO_001_Zr_code93_sto_bestgap_3.00A_r.cif
 
 CUDA_VISIBLE_DEVICES=0 \
 python run_md.py ${TEST_CIF} > ${OUT_BASE}/logs/pilot_gpu0.out 2>&1
