@@ -1,18 +1,25 @@
-# run_md.py
+# ============================================================
+# run_md_xy_pbc_zwall.py
+# ============================================================
+
 import os, sys, glob, time
 import numpy as np
 
 from ase.io import read, write
 from ase.io.trajectory import Trajectory
 from ase.md.langevin import Langevin
-from ase.md.velocitydistribution import MaxwellBoltzmannDistribution, ZeroRotation
+from ase.md.velocitydistribution import (
+    MaxwellBoltzmannDistribution,
+    ZeroRotation,
+    Stationary,
+)
 from ase import units
 from ase.calculators.calculator import Calculator, all_changes
 from mace.calculators import MACECalculator
 
 
 # ============================================================
-# HARD WALL CALCULATOR
+# HARD WALL CALCULATOR (z confinement)
 # ============================================================
 
 class ZWallCalculator(Calculator):
@@ -25,7 +32,12 @@ class ZWallCalculator(Calculator):
         self.z_hi = z_hi
         self.k = k_wall
 
-    def calculate(self, atoms=None, properties=("energy", "forces"), system_changes=all_changes):
+    def calculate(
+        self,
+        atoms=None,
+        properties=("energy", "forces"),
+        system_changes=all_changes,
+    ):
         self.base.calculate(atoms, properties, system_changes)
 
         forces = self.base.results["forces"].copy()
@@ -33,15 +45,19 @@ class ZWallCalculator(Calculator):
 
         z = atoms.positions[:, 2]
 
+        # lower wall
         mask = z < self.z_lo
-        dz = self.z_lo - z[mask]
-        forces[mask, 2] += self.k * dz
-        energy += 0.5 * self.k * np.sum(dz**2)
+        if np.any(mask):
+            dz = self.z_lo - z[mask]
+            forces[mask, 2] += self.k * dz
+            energy += 0.5 * self.k * np.sum(dz ** 2)
 
+        # upper wall
         mask = z > self.z_hi
-        dz = z[mask] - self.z_hi
-        forces[mask, 2] -= self.k * dz
-        energy += 0.5 * self.k * np.sum(dz**2)
+        if np.any(mask):
+            dz = z[mask] - self.z_hi
+            forces[mask, 2] -= self.k * dz
+            energy += 0.5 * self.k * np.sum(dz ** 2)
 
         self.results["forces"] = forces
         self.results["energy"] = energy
@@ -51,26 +67,26 @@ class ZWallCalculator(Calculator):
 # PATHS
 # ============================================================
 
-in_dir = "/home/phanim/ml/athena/polaris/li_llzo_relaxed_bestgaps_polaris/cifs"
-out_base = "/home/phanim/ml/athena/polaris/li_llzo_md_polaris"
+IN_DIR = "/home/phanim/ml/athena/polaris/li_llzo_relaxed_bestgaps_polaris/cifs"
+OUT_BASE = "/home/phanim/ml/athena/polaris/li_llzo_md_polaris"
 
-cif_out  = os.path.join(out_base, "cifs")
-traj_out = os.path.join(out_base, "traj")
-log_out  = os.path.join(out_base, "logs")
+CIF_OUT  = os.path.join(OUT_BASE, "cifs")
+TRAJ_OUT = os.path.join(OUT_BASE, "traj")
+LOG_OUT  = os.path.join(OUT_BASE, "logs")
 
-os.makedirs(cif_out, exist_ok=True)
-os.makedirs(traj_out, exist_ok=True)
-os.makedirs(log_out, exist_ok=True)
+os.makedirs(CIF_OUT, exist_ok=True)
+os.makedirs(TRAJ_OUT, exist_ok=True)
+os.makedirs(LOG_OUT, exist_ok=True)
 
 
 # ============================================================
-# CALCULATOR
+# MACE CALCULATOR
 # ============================================================
 
-model_path = "/home/phanim/ml/MACE_models/2024-01-07-mace-128-L2_epoch-199.model"
+MODEL_PATH = "/home/phanim/ml/MACE_models/2024-01-07-mace-128-L2_epoch-199.model"
 
-base_calc = MACECalculator(
-    model_paths=model_path,
+BASE_CALC = MACECalculator(
+    model_paths=MODEL_PATH,
     device="cuda",
     default_dtype="float32",
 )
@@ -80,24 +96,24 @@ base_calc = MACECalculator(
 # MD PARAMETERS
 # ============================================================
 
-temperatures = [300, 600]
-timestep_fs = 1.0
-nsteps_md = 5000
-snapshot_interval = 25
+TEMPERATURES = [300, 600]      # K
+TIMESTEP_FS = 1.0              # fs (reduce to 0.5 if unstable)
+NSTEPS_MD = 5000
+SNAPSHOT_INTERVAL = 25
 
-friction = 0.03 / units.fs
-vacuum_padding = 8.0
-k_wall = 2000.0
+FRICTION = 0.03 / units.fs
+VACUUM_PADDING = 8.0           # Å
+K_WALL = 500.0                 # eV / Å^2  (soft but safe)
 
 
 # ============================================================
-# INPUT CIF SELECTION
+# INPUT SELECTION
 # ============================================================
 
 if len(sys.argv) > 1:
-    cif_files = [os.path.join(in_dir, f) for f in sys.argv[1:]]
+    cif_files = [os.path.join(IN_DIR, f) for f in sys.argv[1:]]
 else:
-    cif_files = sorted(glob.glob(os.path.join(in_dir, "*.cif")))
+    cif_files = sorted(glob.glob(os.path.join(IN_DIR, "*.cif")))
 
 print(f"Found {len(cif_files)} structures", flush=True)
 
@@ -108,40 +124,55 @@ print(f"Found {len(cif_files)} structures", flush=True)
 
 for cif_file in cif_files:
     name = os.path.splitext(os.path.basename(cif_file))[0]
-
     atoms = read(cif_file)
+
+    # exactly like relaxation
     atoms.set_pbc([True, True, False])
     natoms = len(atoms)
 
     start_time = time.time()
 
-    for T in temperatures:
+    for T in TEMPERATURES:
+
+        # define hard walls from initial geometry
         z = atoms.positions[:, 2]
-        z_lo = z.min() - vacuum_padding
-        z_hi = z.max() + vacuum_padding
+        z_lo = z.min() - VACUUM_PADDING
+        z_hi = z.max() + VACUUM_PADDING
 
         atoms.calc = ZWallCalculator(
-            base_calc=base_calc,
+            base_calc=BASE_CALC,
             z_lo=z_lo,
             z_hi=z_hi,
-            k_wall=k_wall,
+            k_wall=K_WALL,
         )
 
+        # ----------------------------
+        # VELOCITIES (CRITICAL PART)
+        # ----------------------------
         MaxwellBoltzmannDistribution(atoms, T * units.kB)
+        Stationary(atoms)       # remove COM drift
         ZeroRotation(atoms)
 
+        # remove initial z-velocity only
+        vel = atoms.get_velocities()
+        vel[:, 2] = 0.0
+        atoms.set_velocities(vel)
+
+        # ----------------------------
+        # OUTPUTS
+        # ----------------------------
         traj = Trajectory(
-            os.path.join(traj_out, f"{name}_T{T}K.traj"),
+            os.path.join(TRAJ_OUT, f"{name}_T{T}K.traj"),
             "w",
             atoms,
         )
 
         dyn = Langevin(
             atoms,
-            timestep_fs * units.fs,
+            TIMESTEP_FS * units.fs,
             T * units.kB,
-            friction,
-            logfile=os.path.join(log_out, f"{name}_T{T}K.log"),
+            FRICTION,
+            logfile=os.path.join(LOG_OUT, f"{name}_T{T}K.log"),
         )
 
         step = {"i": 0}
@@ -150,25 +181,30 @@ for cif_file in cif_files:
             epot = atoms.get_potential_energy()
             if not np.isfinite(epot) or epot > 0.0:
                 raise RuntimeError(f"Unphysical energy: {epot:.6e}")
+
             traj.write(atoms)
             step["i"] += 1
-            if step["i"] % snapshot_interval == 0:
+
+            if step["i"] % SNAPSHOT_INTERVAL == 0:
                 write(
-                    os.path.join(cif_out, f"{name}_T{T}K_{step['i']}.cif"),
+                    os.path.join(
+                        CIF_OUT,
+                        f"{name}_T{T}K_{step['i']}.cif",
+                    ),
                     atoms,
                 )
 
         dyn.attach(safe_step, interval=1)
 
         try:
-            dyn.run(nsteps_md)
+            dyn.run(NSTEPS_MD)
         except Exception as e:
             print(f"[SKIP] {name} @ {T} K → {e}", flush=True)
         finally:
             traj.close()
 
     elapsed = time.time() - start_time
-    with open(os.path.join(out_base, "MD_TIME_ESTIMATE.md"), "a") as f:
+    with open(os.path.join(OUT_BASE, "MD_TIME_ESTIMATE.md"), "a") as f:
         f.write(
             f"- {name}: {natoms} atoms | "
             f"{elapsed/60:.2f} min | "
