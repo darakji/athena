@@ -1,5 +1,5 @@
 # ============================================================
-# run_md_xy_pbc_zwall.py
+# run_md_active_region_all_cifs.py
 # ============================================================
 
 import os, sys, glob, time
@@ -10,64 +10,19 @@ from ase.io.trajectory import Trajectory
 from ase.md.langevin import Langevin
 from ase.md.velocitydistribution import (
     MaxwellBoltzmannDistribution,
-    ZeroRotation,
     Stationary,
+    ZeroRotation,
 )
+from ase.constraints import FixAtoms
 from ase import units
-from ase.calculators.calculator import Calculator, all_changes
 from mace.calculators import MACECalculator
-
-
-# ============================================================
-# HARD WALL CALCULATOR (z confinement)
-# ============================================================
-
-class ZWallCalculator(Calculator):
-    implemented_properties = ["energy", "forces"]
-
-    def __init__(self, base_calc, z_lo, z_hi, k_wall):
-        super().__init__()
-        self.base = base_calc
-        self.z_lo = z_lo
-        self.z_hi = z_hi
-        self.k = k_wall
-
-    def calculate(
-        self,
-        atoms=None,
-        properties=("energy", "forces"),
-        system_changes=all_changes,
-    ):
-        self.base.calculate(atoms, properties, system_changes)
-
-        forces = self.base.results["forces"].copy()
-        energy = self.base.results.get("energy", 0.0)
-
-        z = atoms.positions[:, 2]
-
-        # lower wall
-        mask = z < self.z_lo
-        if np.any(mask):
-            dz = self.z_lo - z[mask]
-            forces[mask, 2] += self.k * dz
-            energy += 0.5 * self.k * np.sum(dz ** 2)
-
-        # upper wall
-        mask = z > self.z_hi
-        if np.any(mask):
-            dz = z[mask] - self.z_hi
-            forces[mask, 2] -= self.k * dz
-            energy += 0.5 * self.k * np.sum(dz ** 2)
-
-        self.results["forces"] = forces
-        self.results["energy"] = energy
 
 
 # ============================================================
 # PATHS
 # ============================================================
 
-IN_DIR = "/eagle/DFTCalculations/mehul/ml/athena/polaris/li_llzo_relaxed_bestgaps_polaris/cifs"
+IN_BASE = "/eagle/DFTCalculations/mehul/ml/athena/polaris/li_llzo_relaxed_bestgaps_polaris"
 OUT_BASE = "/eagle/DFTCalculations/mehul/ml/athena/polaris/li_llzo_md_polaris"
 
 CIF_OUT  = os.path.join(OUT_BASE, "cifs")
@@ -85,7 +40,7 @@ os.makedirs(LOG_OUT, exist_ok=True)
 
 MODEL_PATH = "/eagle/DFTCalculations/mehul/ml/MACE_models/2023-12-03-mace-128-L1_epoch-199.model"
 
-BASE_CALC = MACECalculator(
+calc = MACECalculator(
     model_paths=MODEL_PATH,
     device="cuda",
     default_dtype="float32",
@@ -97,25 +52,25 @@ BASE_CALC = MACECalculator(
 # ============================================================
 
 TEMPERATURES = [300, 600]      # K
-TIMESTEP_FS = 1.0              # fs (reduce to 0.5 if unstable)
+TIMESTEP_FS = 1.0
 NSTEPS_MD = 5000
 SNAPSHOT_INTERVAL = 25
 
-FRICTION = 0.03 / units.fs
-VACUUM_PADDING = 8.0           # Å
-K_WALL = 500.0                 # eV / Å^2  (soft but safe)
+FRICTION = 0.01 / units.fs
 
 
 # ============================================================
-# INPUT SELECTION
+# INPUT CIF COLLECTION (RECURSIVE)
 # ============================================================
 
 if len(sys.argv) > 1:
-    cif_files = [os.path.join(IN_DIR, f) for f in sys.argv[1:]]
+    cif_files = sys.argv[1:]
 else:
-    cif_files = sorted(glob.glob(os.path.join(IN_DIR, "*.cif")))
+    cif_files = sorted(
+        glob.glob(os.path.join(IN_BASE, "**", "*.cif"), recursive=True)
+    )
 
-print(f"Found {len(cif_files)} structures", flush=True)
+print(f"Found {len(cif_files)} CIF files", flush=True)
 
 
 # ============================================================
@@ -124,43 +79,51 @@ print(f"Found {len(cif_files)} structures", flush=True)
 
 for cif_file in cif_files:
     name = os.path.splitext(os.path.basename(cif_file))[0]
-    atoms = read(cif_file)
-
-    # exactly like relaxation
-    atoms.set_pbc([True, True, False])
-    natoms = len(atoms)
-
     start_time = time.time()
 
     for T in TEMPERATURES:
 
-        # define hard walls from initial geometry
+        # ----------------------------------------------------
+        # LOAD STRUCTURE FRESH
+        # ----------------------------------------------------
+        atoms = read(cif_file)
+        atoms.set_pbc([True, True, False])
+        atoms.calc = calc
+
+        natoms = len(atoms)
+
+        # ----------------------------------------------------
+        # DEFINE FROZEN / ACTIVE REGIONS
+        # ----------------------------------------------------
+        symbols = np.array(atoms.get_chemical_symbols())
         z = atoms.positions[:, 2]
-        z_lo = z.min() - VACUUM_PADDING
-        z_hi = z.max() + VACUUM_PADDING
 
-        atoms.calc = ZWallCalculator(
-            base_calc=BASE_CALC,
-            z_lo=z_lo,
-            z_hi=z_hi,
-            k_wall=K_WALL,
-        )
+        li_mask = symbols == "Li"
+        llzo_mask = ~li_mask
 
-        # ----------------------------
-        # VELOCITIES (CRITICAL PART)
-        # ----------------------------
+        # Freeze bottom Li reservoir
+        freeze_li = li_mask & (z < np.percentile(z[li_mask], 20))
+
+        # Freeze top LLZO reservoir
+        freeze_llzo = llzo_mask & (z > np.percentile(z[llzo_mask], 80))
+
+        freeze_mask = freeze_li | freeze_llzo
+        atoms.set_constraint(FixAtoms(mask=freeze_mask))
+
+        # ----------------------------------------------------
+        # VELOCITY INITIALIZATION (ACTIVE ATOMS ONLY)
+        # ----------------------------------------------------
         MaxwellBoltzmannDistribution(atoms, T * units.kB)
-        Stationary(atoms)       # remove COM drift
+        Stationary(atoms)
         ZeroRotation(atoms)
 
-        # remove initial z-velocity only
         vel = atoms.get_velocities()
-        vel[:, 2] = 0.0
+        vel[freeze_mask] = 0.0
         atoms.set_velocities(vel)
 
-        # ----------------------------
+        # ----------------------------------------------------
         # OUTPUTS
-        # ----------------------------
+        # ----------------------------------------------------
         traj = Trajectory(
             os.path.join(TRAJ_OUT, f"{name}_T{T}K.traj"),
             "w",
@@ -177,11 +140,7 @@ for cif_file in cif_files:
 
         step = {"i": 0}
 
-        def safe_step():
-            epot = atoms.get_potential_energy()
-            if not np.isfinite(epot) or epot > 0.0:
-                raise RuntimeError(f"Unphysical energy: {epot:.6e}")
-
+        def write_outputs():
             traj.write(atoms)
             step["i"] += 1
 
@@ -194,7 +153,7 @@ for cif_file in cif_files:
                     atoms,
                 )
 
-        dyn.attach(safe_step, interval=1)
+        dyn.attach(write_outputs, interval=1)
 
         try:
             dyn.run(NSTEPS_MD)
