@@ -67,8 +67,8 @@ class ZWallCalculator(Calculator):
 # PATHS
 # ============================================================
 
-IN_DIR = "/home/phanim/ml/athena/polaris/li_llzo_relaxed_bestgaps_polaris/cifs"
-OUT_BASE = "/home/phanim/ml/athena/polaris/li_llzo_md_polaris"
+IN_DIR = "/eagle/DFTCalculations/mehul/ml/athena/polaris/li_llzo_relaxed_bestgaps_polaris/cifs"
+OUT_BASE = "/eagle/DFTCalculations/mehul/ml/athena/polaris/li_llzo_md_polaris"
 
 CIF_OUT  = os.path.join(OUT_BASE, "cifs")
 TRAJ_OUT = os.path.join(OUT_BASE, "traj")
@@ -83,7 +83,7 @@ os.makedirs(LOG_OUT, exist_ok=True)
 # MACE CALCULATOR
 # ============================================================
 
-MODEL_PATH = "/home/phanim/ml/MACE_models/2024-01-07-mace-128-L2_epoch-199.model"
+MODEL_PATH = "/eagle/DFTCalculations/mehul/ml/MACE_models/2024-01-07-mace-128-L2_epoch-199.model"
 
 BASE_CALC = MACECalculator(
     model_paths=MODEL_PATH,
