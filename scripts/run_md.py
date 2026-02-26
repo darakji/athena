@@ -26,11 +26,11 @@ from mace.calculators import MACECalculator
 # Paths
 # =======================
 
-# in_dir = "/home/mehuldarak/athena/polaris/scripts/remaining_slab"
-# out_base = "/home/mehuldarak/athena/polaris/scripts/remaining_slab_md"
+in_dir = "/home/mehuldarak/athena/polaris/scripts/remaining_slab"
+out_base = "/home/mehuldarak/athena/polaris/scripts/remaining_slab_md"
 
-in_dir = "/eagle/DFTCalculations/mehul/ml/athena/polaris/li_llzo_relaxed_bestgaps_polaris"
-out_base = "/eagle/DFTCalculations/mehul/ml/athena/polaris/li_llzo_md_polaris"
+# IN_BASE = "/eagle/DFTCalculations/mehul/ml/athena/polaris/li_llzo_relaxed_bestgaps_polaris"
+# OUT_BASE = "/eagle/DFTCalculations/mehul/ml/athena/polaris/li_llzo_md_polaris"
 
 cif_out  = os.path.join(out_base, "cifs")
 traj_out = os.path.join(out_base, "traj")
@@ -45,8 +45,8 @@ os.makedirs(log_out, exist_ok=True)
 # MACE model
 # =======================
 
-# model_path = "/home/mehuldarak/MACE_models/universal_09072025/2024-01-07-mace-128-L2_epoch-199.model"
-model_path = "/eagle/DFTCalculations/mehul/ml/MACE_models/2023-12-03-mace-128-L1_epoch-199.model"
+model_path = "/home/mehuldarak/MACE_models/universal_09072025/2023-12-03-mace-128-L1_epoch-199.model"
+# MODEL_PATH = "/eagle/DFTCalculations/mehul/ml/MACE_models/2023-12-03-mace-128-L1_epoch-199.model"
 
 print("Loading MACE calculator...", flush=True)
 
@@ -61,7 +61,7 @@ calc = MACECalculator(
 # MD parameters
 # =======================
 
-TEMPERATURES = [300, 600]    # K
+TEMPERATURES = [1220]    # K
 TIMESTEP_FS = 1.0
 NSTEPS_MD = 5000
 SNAPSHOT_INTERVAL = 25
@@ -71,22 +71,13 @@ FRICTION = 0.01 / units.fs
 active_fraction = 0.85
 min_active_angstrom = 6.0
 
+
 # =======================
 # Collect CIFs
 # =======================
 
-import sys
-
-if len(sys.argv) > 1:
-    # group_gpu*.txt contains FILENAMES only
-    cif_files = [os.path.join(in_dir, name) for name in sys.argv[1:]]
-else:
-    # fallback: run all CIFs in directory
-    cif_files = sorted(glob.glob(os.path.join(in_dir, "*.cif")))
-
-print("Running MD on the following CIFs:", flush=True)
-for c in cif_files:
-    print("  ", c, flush=True)
+cif_files = sorted(glob.glob(os.path.join(in_dir, "*.cif")))
+print(f"Found {len(cif_files)} structures for MD.", flush=True)
 
 
 # =======================
