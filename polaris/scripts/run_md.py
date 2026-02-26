@@ -83,7 +83,7 @@ os.makedirs(LOG_OUT, exist_ok=True)
 # MACE CALCULATOR
 # ============================================================
 
-MODEL_PATH = "/eagle/DFTCalculations/mehul/ml/MACE_models/2024-01-07-mace-128-L2_epoch-199.model"
+MODEL_PATH = "/eagle/DFTCalculations/mehul/ml/MACE_models/2023-12-03-mace-128-L1_epoch-199.model"
 
 BASE_CALC = MACECalculator(
     model_paths=MODEL_PATH,
