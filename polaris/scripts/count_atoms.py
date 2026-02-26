@@ -2,7 +2,7 @@
 import glob, os
 from ase.io import read
 
-in_dir = "/home/phanim/ml/athena/polaris/li_llzo_relaxed_bestgaps_polaris/cifs"
+in_dir = "/home/mehuldarak/athena/polaris/li_llzo_relaxed_bestgaps_polaris/cifs"
 
 for f in sorted(glob.glob(os.path.join(in_dir, "*.cif"))):
     atoms = read(f)
