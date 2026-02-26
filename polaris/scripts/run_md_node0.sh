@@ -25,14 +25,14 @@ mkdir -p ${OUT_BASE}/logs
 
 mapfile -t CIFS < group_gpu0.txt
 
-CUDA_VISIBLE_DEVICES=0 python run_md.py "${CIFS[0]}" > ${OUT_BASE}/logs/node0_gpu0.out 2>&1 &
-PID0=$!
-CUDA_VISIBLE_DEVICES=1 python run_md.py "${CIFS[1]}" > ${OUT_BASE}/logs/node0_gpu1.out 2>&1 &
-PID1=$!
-CUDA_VISIBLE_DEVICES=2 python run_md.py "${CIFS[2]}" > ${OUT_BASE}/logs/node0_gpu2.out 2>&1 &
-PID2=$!
-CUDA_VISIBLE_DEVICES=3 python run_md.py "${CIFS[3]}" > ${OUT_BASE}/logs/node0_gpu3.out 2>&1 &
-PID3=$!
+for i in 0 1 2 3; do
+  CIF="${CIFS[$i]}"
+  if [[ -n "$CIF" ]]; then
+    echo "Launching GPU $i with CIF: $CIF"
+    CUDA_VISIBLE_DEVICES=$i python run_md.py "$CIF" \
+      > ${OUT_BASE}/logs/node0_gpu${i}.out 2>&1 &
+  fi
+done
 
-wait $PID0 $PID1 $PID2 $PID3
+wait
 echo "NODE 0 COMPLETED"
