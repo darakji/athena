@@ -29,7 +29,7 @@ from mace.calculators import MACECalculator
 # in_dir = "/home/mehuldarak/athena/polaris/scripts/remaining_slab"
 # out_base = "/home/mehuldarak/athena/polaris/scripts/remaining_slab_md"
 
-in_dir = "/eagle/DFTCalculations/mehul/ml/athena/polaris/li_llzo_relaxed_bestgaps_polaris/cif"
+in_dir = "/eagle/DFTCalculations/mehul/ml/athena/polaris/li_llzo_relaxed_bestgaps_polaris/cifs"
 out_base = "/eagle/DFTCalculations/mehul/ml/athena/polaris/li_llzo_md_polaris"
 
 cif_out  = os.path.join(out_base, "cifs")
