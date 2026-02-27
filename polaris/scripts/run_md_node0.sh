@@ -23,18 +23,33 @@ export NUMEXPR_NUM_THREADS=1
 OUT_BASE=/eagle/DFTCalculations/mehul/ml/athena/polaris/li_llzo_md_polaris
 mkdir -p ${OUT_BASE}/logs
 
-read -r -a CIFS < group_gpu0.txt
+mapfile -t CIFS < group_gpu0.txt
+
+echo "=== Parsed CIF paths ==="
+for i in 0 1 2 3; do
+    echo "GPU $i: [${CIFS[$i]}]"
+done
+echo "========================"
 
 for i in 0 1 2 3; do
   CIF="${CIFS[$i]}"
-  if [[ -z "${CIF// }" ]]; then
+  CIF="${CIF// /}"   # strip any accidental spaces
+
+  if [[ -z "$CIF" ]]; then
     echo "GPU $i: empty entry, skipping"
     continue
   fi
-  echo "GPU $i running $CIF"
+
+  if [[ ! -f "$CIF" ]]; then
+    echo "GPU $i: file not found: $CIF"
+    continue
+  fi
+
+  echo "GPU $i running: $CIF"
   CUDA_VISIBLE_DEVICES=$i python \
     /eagle/DFTCalculations/mehul/ml/athena/polaris/scripts/run_md.py "$CIF" \
     > ${OUT_BASE}/logs/node0_gpu${i}.out 2>&1 &
 done
+
 wait
 echo "NODE 0 COMPLETED"

@@ -5,8 +5,8 @@
 #PBS -A DFTCalculations
 #PBS -l filesystems=home:eagle
 #PBS -j oe
-#PBS -o output_node2.log
-#PBS -e error_node2.log
+#PBS -o new_output_node2.log
+#PBS -e new_error_node2.log
 
 cd ${PBS_O_WORKDIR}
 
