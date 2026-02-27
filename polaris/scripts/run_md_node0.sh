@@ -34,7 +34,7 @@ for i in 0 1 2 3; do
   echo "GPU $i running $CIF"
   CUDA_VISIBLE_DEVICES=$i python \
     /eagle/DFTCalculations/mehul/ml/athena/polaris/scripts/run_md.py "$CIF" \
-    > ${OUT_BASE}/logs/node0_gpu${i}.out 2>&1 &
+    > ${OUT_BASE}/logs/node0_gpu${i}_${PBS_JOBID}.out 2>&1 &
 done
 wait
 echo "NODE 0 COMPLETED"
