@@ -78,16 +78,15 @@ min_active_angstrom = 6.0
 import sys
 
 if len(sys.argv) > 1:
-    # group_gpu*.txt contains FILENAMES only
-    cif_files = [os.path.join(in_dir, name) for name in sys.argv[1:]]
+    cif_files = [os.path.abspath(arg) for arg in sys.argv[1:]]
 else:
     # fallback: run all CIFs in directory
     cif_files = sorted(glob.glob(os.path.join(in_dir, "*.cif")))
 
 print("Running MD on the following CIFs:", flush=True)
 for c in cif_files:
-    print("  ", c, flush=True)
-
+    if not c.endswith(".cif") or not os.path.isfile(c):
+        raise RuntimeError(f"Invalid CIF input: {c}")
 
 # =======================
 # Main loop
