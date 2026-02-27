@@ -23,7 +23,7 @@ export NUMEXPR_NUM_THREADS=1
 OUT_BASE=/eagle/DFTCalculations/mehul/ml/athena/polaris/li_llzo_md_polaris
 mkdir -p ${OUT_BASE}/logs
 
-read -r -a CIFS < group_gpu1.txt
+mapfile -t CIFS < /eagle/DFTCalculations/mehul/ml/athena/group_gpu1.txt
 
 for i in 0 1 2 3; do
   CIF="${CIFS[$i]}"
