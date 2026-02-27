@@ -42,7 +42,7 @@ os.makedirs(log_out, exist_ok=True)
 # MACE model (same role as Script 1)
 # =======================
 
-model_path = "/eagle/DFTCalculations/mehul/ml/MACE_models/universal_09072025/mace-omat-0-medium.model"
+model_path = "/eagle/DFTCalculations/mehul/ml/MACE_models/mace-omat-0-medium.model"
 
 print("Loading MACE calculator...", flush=True)
 
