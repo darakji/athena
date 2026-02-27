@@ -61,7 +61,7 @@ calc = MACECalculator(
 # MD parameters
 # =======================
 
-TEMPERATURES = [1220]    # K
+TEMPERATURES = [300, 600]    # K
 TIMESTEP_FS = 1.0
 NSTEPS_MD = 5000
 SNAPSHOT_INTERVAL = 25

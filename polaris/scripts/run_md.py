@@ -78,7 +78,11 @@ min_active_angstrom = 6.0
 import sys
 
 if len(sys.argv) > 1:
-    cif_files = [os.path.abspath(arg) for arg in sys.argv[1:]]
+    cif_files = [
+        os.path.abspath(arg)
+        for arg in sys.argv[1:]
+        if arg.strip()
+    ]
 else:
     # fallback: run all CIFs in directory
     cif_files = sorted(glob.glob(os.path.join(in_dir, "*.cif")))

@@ -27,11 +27,14 @@ mapfile -t CIFS < group_gpu2.txt
 
 for i in 0 1 2 3; do
   CIF="${CIFS[$i]}"
-  if [[ -n "$CIF" ]]; then
-    echo "Launching GPU $i with CIF: $CIF"
-    CUDA_VISIBLE_DEVICES=$i python run_md.py "$CIF" \
-      > ${OUT_BASE}/logs/node2_gpu${i}.out 2>&1 &
+  if [[ -z "${CIF// }" ]]; then
+    echo "GPU $i: empty entry, skipping"
+    continue
   fi
+  echo "GPU $i running $CIF"
+  CUDA_VISIBLE_DEVICES=$i python \
+    /eagle/DFTCalculations/mehul/ml/athena/polaris/scripts/run_md.py "$CIF" \
+    > ${OUT_BASE}/logs/node0_gpu${i}.out 2>&1 &
 done
 
 wait
