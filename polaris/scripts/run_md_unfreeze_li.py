@@ -1,6 +1,6 @@
 # ============================================================
 # MD with geometrically defined active interface region
-# (EXACT SAME LOGIC AS SCRIPT 1)
+# (EXACT same logic as relaxation script)
 # ============================================================
 
 import os
@@ -23,11 +23,14 @@ from mace.calculators import MACECalculator
 
 
 # =======================
-# Paths (Polaris)
+# Paths
 # =======================
 
-in_dir = "/eagle/DFTCalculations/mehul/ml/athena/polaris/remaining_slab/cifs"
-out_base = "/eagle/DFTCalculations/mehul/ml/athena/polaris/remaining_slab_md_unfreeze_li"
+# in_dir = "/home/mehuldarak/athena/polaris/scripts/remaining_slab"
+# out_base = "/home/mehuldarak/athena/polaris/scripts/remaining_slab_md"
+
+in_dir = "/home/mehuldarak/athena/polaris/scripts/remaining_slab"
+out_base = "/home/mehuldarak/athena/polaris/scripts/remaining_slab_md_unfreeze_li"
 
 cif_out  = os.path.join(out_base, "cifs")
 traj_out = os.path.join(out_base, "traj")
@@ -39,10 +42,11 @@ os.makedirs(log_out, exist_ok=True)
 
 
 # =======================
-# MACE model (same role as Script 1)
+# MACE model
 # =======================
 
-model_path = "/eagle/DFTCalculations/mehul/ml/MACE_models/universal_09072025/mace-omat-0-medium.model"
+model_path = "/home/mehuldarak/MACE_models/universal_09072025/mace-omat-0-medium.model"
+# model_path = "/home/mehuldarak/athena/polaris//MACE_models/2023-12-03-mace-128-L1_epoch-199.model"
 
 print("Loading MACE calculator...", flush=True)
 
@@ -55,10 +59,10 @@ calc = MACECalculator(
 
 
 # =======================
-# MD parameters (IDENTICAL)
+# MD parameters
 # =======================
 
-TEMPERATURES = [550, 1100]    # K
+TEMPERATURES = [720]    # K
 TIMESTEP_FS = 1.0
 NSTEPS_MD = 5000
 SNAPSHOT_INTERVAL = 25
@@ -67,7 +71,6 @@ FRICTION = 0.001 / units.fs
 
 active_fraction = 0.85
 min_active_angstrom = 6.0
-
 
 # =======================
 # Collect CIFs
@@ -82,13 +85,13 @@ if len(sys.argv) > 1:
         if arg.strip()
     ]
 else:
+    # fallback: run all CIFs in directory
     cif_files = sorted(glob.glob(os.path.join(in_dir, "*.cif")))
 
 print("Running MD on the following CIFs:", flush=True)
 for c in cif_files:
     if not c.endswith(".cif") or not os.path.isfile(c):
         raise RuntimeError(f"Invalid CIF input: {c}")
-
 
 # =======================
 # Main loop
@@ -137,7 +140,6 @@ for cif_file in cif_files:
 
         # -----------------------
         # Active region thickness
-        # (LLZO + Li computed, Li not frozen — SAME AS SCRIPT 1)
         # -----------------------
         llzo_thickness = llzo_top - llzo_bottom
         li_thickness   = li_top - li_bottom
@@ -155,7 +157,7 @@ for cif_file in cif_files:
         li_active_max   = li_bottom + li_active_thickness
 
         # -----------------------
-        # Freeze mask (IDENTICAL)
+        # Freeze mask (SAME LOGIC)
         # -----------------------
         freeze_mask = (
             (llzo_mask & (z < llzo_active_min))
@@ -200,7 +202,7 @@ for cif_file in cif_files:
         step = {"i": 0}
 
         def write_outputs():
-            atoms.wrap(pbc=[True, True, False])   # EXACT SAME
+            atoms.wrap(pbc=[True, True, False])   # <<< THIS LINE
             traj.write(atoms)
             step["i"] += 1
 
@@ -221,6 +223,9 @@ for cif_file in cif_files:
             traj.close()
 
     elapsed = time.time() - start_time
-    print(f"Finished {fname} in {elapsed/60:.2f} min", flush=True)
+    print(
+        f"Finished {fname} in {elapsed/60:.2f} min",
+        flush=True
+    )
 
 print("\nALL MD FINISHED")
