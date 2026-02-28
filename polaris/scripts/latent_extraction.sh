@@ -37,7 +37,7 @@ mkdir -p ${OUT_BASE}
 mkdir -p ${LOG_DIR}
 
 WORLD_SIZE=4
-BATCH_SIZE=32
+BATCH_SIZE=4
 
 # -------------------------
 # Launch 1 process per GPU
@@ -53,6 +53,7 @@ for GPU_ID in 0 1 2 3; do
     --batch_size ${BATCH_SIZE} \
     --gpu_id ${GPU_ID} \
     --world_size ${WORLD_SIZE} \
+    --resume \
     > ${LOG_DIR}/gpu${GPU_ID}_${PBS_JOBID}.out 2>&1 &
 
 done
