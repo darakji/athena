@@ -1,0 +1,2 @@
+# Ignore Jupyter Notebooks from stats
+*.ipynb linguist-documentation
