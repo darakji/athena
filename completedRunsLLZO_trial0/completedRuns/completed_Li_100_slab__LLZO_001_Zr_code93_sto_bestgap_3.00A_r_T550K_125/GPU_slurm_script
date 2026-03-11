@@ -1,0 +1,28 @@
+#!/bin/sh
+#SBATCH -A nti115
+#SBATCH -J DFTFE_demo
+#SBATCH -t 00:59:00
+#SBATCH -p batch
+#SBATCH -N 16
+#SBATCH --gpus-per-node 8
+#SBATCH --ntasks-per-gpu 1
+#SBATCH --gpu-bind closest
+##SBATCH --dependency=singleton
+export OMP_NUM_THREADS=1
+export MPICH_VERSION_DISPLAY=1
+export MPICH_ENV_DISPLAY=1
+export MPICH_OFI_NIC_POLICY=NUMA
+export MPICH_GPU_SUPPORT_ENABLED=1
+export MPICH_SMP_SINGLE_COPY_MODE=NONE
+
+export FI_MR_CACHE_MONITOR=disabled
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$INST/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$INST/lib/lib64
+export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
+export DFTFE_NUM_THREADS=3
+export ELPA_DEFAULT_omp_threads=3
+module list
+export BASE=/lustre/orion/nti115/scratch/kartickr/DFTFE/dftfe_multipoleBC_slabsPR/build/release/real
+#srun -n $SLURM_NTASKS -c 7 --gpu-bind closest $BASE/dftfe  parameterFileGPU_Poly7Mesh1D5ZeroPotentialQuad24.prm > out_parameterFileGPU_Poly7Mesh1D5ZeroPotentialQuad24Trial3.op
+srun -n $SLURM_NTASKS -c 7 --gpu-bind closest $BASE/dftfe parameterFile_a.prm > out_Resta.op
