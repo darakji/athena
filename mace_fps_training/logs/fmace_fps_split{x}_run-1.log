@@ -1,0 +1,30 @@
+2026-03-25 00:09:51.550 INFO: ===========VERIFYING SETTINGS===========
+2026-03-25 00:09:51.550 INFO: MACE version: 0.3.15
+2026-03-25 00:09:51.569 INFO: CUDA version: 12.8, CUDA device: 0
+2026-03-25 00:09:51.813 INFO: Using foundation model /home/mehuldarak/MACE_models/universal_09072025/mace-omat-0-medium.model as initial checkpoint.
+2026-03-25 00:09:51.814 WARNING: Using multiheads finetuning with a foundation model that is not a Materials Project model, need to provied a path to a pretraining file with --pt_train_file.
+2026-03-25 00:09:51.814 INFO: ===========LOADING INPUT DATA===========
+2026-03-25 00:09:51.814 INFO: Using heads: ['Default']
+2026-03-25 00:09:51.814 INFO: Using the key specifications to parse data:
+2026-03-25 00:09:51.814 INFO: Default: KeySpecification(info_keys={'energy': 'REF_energy', 'stress': 'REF_stress', 'virials': 'REF_virials', 'dipole': 'dipole', 'head': 'head', 'elec_temp': 'elec_temp', 'total_charge': 'total_charge', 'polarizability': 'polarizability', 'total_spin': 'total_spin'}, arrays_keys={'forces': 'REF_forces', 'charges': 'REF_charges'})
+2026-03-25 00:09:51.814 INFO: =============    Processing head Default     ===========
+2026-03-25 00:11:24.348 INFO: ===========VERIFYING SETTINGS===========
+2026-03-25 00:11:24.348 INFO: MACE version: 0.3.15
+2026-03-25 00:11:24.367 INFO: CUDA version: 12.8, CUDA device: 0
+2026-03-25 00:11:24.604 INFO: Using foundation model /home/mehuldarak/MACE_models/universal_09072025/mace-omat-0-medium.model as initial checkpoint.
+2026-03-25 00:11:24.605 WARNING: Using multiheads finetuning with a foundation model that is not a Materials Project model, need to provied a path to a pretraining file with --pt_train_file.
+2026-03-25 00:11:24.605 INFO: ===========LOADING INPUT DATA===========
+2026-03-25 00:11:24.605 INFO: Using heads: ['Default']
+2026-03-25 00:11:24.605 INFO: Using the key specifications to parse data:
+2026-03-25 00:11:24.606 INFO: Default: KeySpecification(info_keys={'energy': 'REF_energy', 'stress': 'REF_stress', 'virials': 'REF_virials', 'dipole': 'dipole', 'head': 'head', 'elec_temp': 'elec_temp', 'total_charge': 'total_charge', 'polarizability': 'polarizability', 'total_spin': 'total_spin'}, arrays_keys={'forces': 'REF_forces', 'charges': 'REF_charges'})
+2026-03-25 00:11:24.606 INFO: =============    Processing head Default     ===========
+2026-03-25 00:11:39.412 INFO: ===========VERIFYING SETTINGS===========
+2026-03-25 00:11:39.412 INFO: MACE version: 0.3.15
+2026-03-25 00:11:39.430 INFO: CUDA version: 12.8, CUDA device: 0
+2026-03-25 00:11:39.677 INFO: Using foundation model /home/mehuldarak/MACE_models/universal_09072025/mace-omat-0-medium.model as initial checkpoint.
+2026-03-25 00:11:39.678 WARNING: Using multiheads finetuning with a foundation model that is not a Materials Project model, need to provied a path to a pretraining file with --pt_train_file.
+2026-03-25 00:11:39.678 INFO: ===========LOADING INPUT DATA===========
+2026-03-25 00:11:39.678 INFO: Using heads: ['Default']
+2026-03-25 00:11:39.678 INFO: Using the key specifications to parse data:
+2026-03-25 00:11:39.678 INFO: Default: KeySpecification(info_keys={'energy': 'REF_energy', 'stress': 'REF_stress', 'virials': 'REF_virials', 'dipole': 'dipole', 'head': 'head', 'elec_temp': 'elec_temp', 'total_charge': 'total_charge', 'polarizability': 'polarizability', 'total_spin': 'total_spin'}, arrays_keys={'forces': 'REF_forces', 'charges': 'REF_charges'})
+2026-03-25 00:11:39.678 INFO: =============    Processing head Default     ===========

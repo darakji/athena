@@ -1,0 +1,166 @@
+2026-03-25 01:09:06.980 INFO: ===========VERIFYING SETTINGS===========
+2026-03-25 01:09:06.980 INFO: MACE version: 0.3.15
+2026-03-25 01:09:06.980 DEBUG: Configuration: Namespace(config=None, name='mace_fps_split15', seed=1, work_dir='.', log_dir='./logs', model_dir='.', checkpoints_dir='./checkpoints', results_dir='./results', downloads_dir='./downloads', device='cuda', default_dtype='float32', distributed=False, launcher='slurm', log_level='INFO', plot=True, plot_frequency=0, plot_interaction_e=False, error_table='PerAtomRMSE', model='MACE', r_max=5.0, radial_type='bessel', num_radial_basis=8, num_cutoff_basis=5, pair_repulsion=False, distance_transform='None', apply_cutoff=True, use_last_readout_only=False, use_embedding_readout=False, interaction='RealAgnosticResidualInteractionBlock', interaction_first='RealAgnosticResidualInteractionBlock', max_ell=3, correlation=3, use_reduced_cg=False, use_so3=False, use_agnostic_product=False, num_interactions=2, MLP_irreps='16x0e', radial_MLP='[64, 64, 64]', hidden_irreps='128x0e + 128x1o', edge_irreps=None, num_channels=128, max_L=1, gate='silu', kspace_cutoff_factor=1.5, atomic_multipoles_max_l=0, atomic_multipoles_smearing_width=1.0, field_feature_max_l=0, field_feature_widths='[1.0]', field_feature_norms=None, num_recursion_steps=1, field_si=False, include_electrostatic_self_interaction=False, add_local_electron_energy=False, quadrupole_feature_corrections=False, return_electrostatic_potentials=False, field_norm_factor=0.02, fixedpoint_update_config=None, field_readout_config=None, scaling='rms_forces_scaling', avg_num_neighbors=1, compute_avg_num_neighbors=True, compute_stress=False, compute_forces=True, compute_polarizability=False, compute_atomic_dipole=False, train_file='/home/mehuldarak/athena/fps_dftfe_data/split_15/fps_dftfe_split_15_train.extxyz', valid_file='/home/mehuldarak/athena/fps_dftfe_data/split_15/fps_dftfe_split_15_val.extxyz', valid_fraction=0.1, test_file=None, test_dir=None, multi_processed_test=False, num_workers=0, pin_memory=True, atomic_numbers=None, mean=None, std=None, statistics_file=None, les_arguments=None, E0s='{3:-190.7590256408,8:-442.9888796243,40:-1380.1817128081,57:-958.0774205521}', pseudolabel_replay=False, pseudolabel_replay_compute_stress=False, foundation_filter_elements=True, heads=None, multiheads_finetuning=True, foundation_head=None, weight_pt_head=1.0, real_pt_data_ratio_threshold=0.1, num_samples_pt=10000, force_mh_ft_lr=False, subselect_pt='random', filter_type_pt='none', allow_random_padding_pt=True, pt_train_file=None, pt_valid_file=None, foundation_model_elements=False, keep_isolated_atoms=False, lora=True, lora_rank=5, lora_alpha=1.0, energy_key='REF_energy', forces_key='REF_forces', virials_key='REF_virials', stress_key='REF_stress', dipole_key='dipole', polarizability_key='polarizability', head_key='head', charges_key='REF_charges', elec_temp_key='elec_temp', total_spin_key='total_spin', total_charge_key='total_charge', embedding_specs=None, skip_evaluate_heads='pt_head', loss='weighted', forces_weight=5.0, swa_forces_weight=100.0, energy_weight=1.0, swa_energy_weight=1000.0, virials_weight=1.0, swa_virials_weight=10.0, stress_weight=0.0, swa_stress_weight=10.0, dipole_weight=1.0, swa_dipole_weight=1.0, swa_polarizability_weight=1.0, polarizability_weight=1.0, config_type_weights='{"Default":1.0}', huber_delta=0.01, optimizer='adam', beta=0.9, beta1_schedulefree=0.9, beta2_schedulefree=0.98, batch_size=4, valid_batch_size=10, lr=0.0005, swa_lr=0.001, weight_decay=5e-07, lr_params_factors='{"embedding_lr_factor": 1.0, "interactions_lr_factor": 1.0, "products_lr_factor": 1.0, "readouts_lr_factor": 1.0}', freeze=None, amsgrad=True, scheduler='ReduceLROnPlateau', lr_factor=0.8, scheduler_patience=50, lr_scheduler_gamma=0.9993, swa=False, start_swa=None, lbfgs=False, ema=False, ema_decay=0.99, max_num_epochs=120, patience=2048, foundation_model='/home/mehuldarak/MACE_models/universal_09072025/mace-omat-0-medium.model', foundation_model_kwargs='{}', foundation_model_readout=True, eval_interval=1, keep_checkpoints=False, save_all_checkpoints=False, restart_latest=True, save_cpu=False, clip_grad=10.0, dry_run=False, enable_cueq=False, only_cueq=False, enable_oeq=False, wandb=False, wandb_dir=None, wandb_project='', wandb_entity='', wandb_name='', wandb_log_hypers=['num_channels', 'max_L', 'correlation', 'lr', 'swa_lr', 'weight_decay', 'batch_size', 'max_num_epochs', 'start_swa', 'energy_weight', 'forces_weight'], key_specification=KeySpecification(info_keys={'energy': 'REF_energy', 'stress': 'REF_stress', 'virials': 'REF_virials', 'dipole': 'dipole', 'head': 'head', 'elec_temp': 'elec_temp', 'total_charge': 'total_charge', 'polarizability': 'polarizability', 'total_spin': 'total_spin'}, arrays_keys={'forces': 'REF_forces', 'charges': 'REF_charges'}))
+2026-03-25 01:09:06.999 INFO: CUDA version: 12.8, CUDA device: 0
+2026-03-25 01:09:07.022 DEBUG: Popen(['git', 'version'], cwd=/home/mehuldarak/athena/mace_fps_training, stdin=None, shell=False, universal_newlines=False)
+2026-03-25 01:09:07.025 DEBUG: Popen(['git', 'version'], cwd=/home/mehuldarak/athena/mace_fps_training, stdin=None, shell=False, universal_newlines=False)
+2026-03-25 01:09:07.028 DEBUG: sys.platform='linux', git_executable='git'
+2026-03-25 01:09:07.028 DEBUG: Popen(['git', 'cat-file', '--batch-check'], cwd=/home/mehuldarak/athena, stdin=<valid stream>, shell=False, universal_newlines=False)
+2026-03-25 01:09:07.031 DEBUG: Current Git commit: a6b661176b6b9feb0567915cba9df62cd0dab5ce
+2026-03-25 01:09:07.250 INFO: Using foundation model /home/mehuldarak/MACE_models/universal_09072025/mace-omat-0-medium.model as initial checkpoint.
+2026-03-25 01:09:07.251 WARNING: Using multiheads finetuning with a foundation model that is not a Materials Project model, need to provied a path to a pretraining file with --pt_train_file.
+2026-03-25 01:09:07.251 INFO: ===========LOADING INPUT DATA===========
+2026-03-25 01:09:07.251 INFO: Using heads: ['Default']
+2026-03-25 01:09:07.251 INFO: Using the key specifications to parse data:
+2026-03-25 01:09:07.251 INFO: Default: KeySpecification(info_keys={'energy': 'REF_energy', 'stress': 'REF_stress', 'virials': 'REF_virials', 'dipole': 'dipole', 'head': 'head', 'elec_temp': 'elec_temp', 'total_charge': 'total_charge', 'polarizability': 'polarizability', 'total_spin': 'total_spin'}, arrays_keys={'forces': 'REF_forces', 'charges': 'REF_charges'})
+2026-03-25 01:09:07.251 INFO: =============    Processing head Default     ===========
+2026-03-25 01:09:07.251 DEBUG: Loading training file: /home/mehuldarak/athena/fps_dftfe_data/split_15/fps_dftfe_split_15_train.extxyz
+2026-03-25 01:09:07.297 INFO: Training set 1/1 [energy: 16, stress: 0, virials: 0, dipole components: 0, head: 16, elec_temp: 0, total_charge: 0, polarizability: 0, total_spin: 0, forces: 16, charges: 0]
+2026-03-25 01:09:07.297 INFO: Total Training set [energy: 16, stress: 0, virials: 0, dipole components: 0, head: 16, elec_temp: 0, total_charge: 0, polarizability: 0, total_spin: 0, forces: 16, charges: 0]
+2026-03-25 01:09:07.315 INFO: Validation set 1/1 [energy: 4, stress: 0, virials: 0, dipole components: 0, head: 4, elec_temp: 0, total_charge: 0, polarizability: 0, total_spin: 0, forces: 4, charges: 0]
+2026-03-25 01:09:07.315 INFO: Total Validation set [energy: 4, stress: 0, virials: 0, dipole components: 0, head: 4, elec_temp: 0, total_charge: 0, polarizability: 0, total_spin: 0, forces: 4, charges: 0]
+2026-03-25 01:09:07.315 INFO: Total number of configurations: train=16, valid=4, tests=[],
+2026-03-25 01:09:07.315 WARNING: Validation batch size (10) is larger than the number of validation data (4)
+2026-03-25 01:09:07.317 INFO: Atomic Numbers used: [np.int64(3), np.int64(8), np.int64(40), np.int64(57)]
+2026-03-25 01:09:07.317 INFO: Isolated Atomic Energies (E0s) not in training file, using command line argument
+2026-03-25 01:09:07.317 INFO: Atomic Energies used (z: eV) for head Default: {3: -190.7590256408, 8: -442.9888796243, 40: -1380.1817128081, 57: -958.0774205521}
+2026-03-25 01:09:07.317 INFO: Processing datasets for head 'Default'
+2026-03-25 01:09:07.513 DEBUG: Successfully loaded dataset from ASE files: ['/home/mehuldarak/athena/fps_dftfe_data/split_15/fps_dftfe_split_15_train.extxyz']
+2026-03-25 01:09:07.513 INFO: Combining 1 list datasets for head 'Default'
+2026-03-25 01:09:07.553 DEBUG: Successfully loaded validation dataset from ASE files: ['/home/mehuldarak/athena/fps_dftfe_data/split_15/fps_dftfe_split_15_val.extxyz']
+2026-03-25 01:09:07.553 INFO: Combining 1 list datasets for head 'Default_valid'
+2026-03-25 01:09:07.553 INFO: Combined validation datasets for Default
+2026-03-25 01:09:07.553 INFO: Head 'Default' training dataset size: 16
+2026-03-25 01:09:07.553 INFO: Computing average number of neighbors
+2026-03-25 01:09:07.583 INFO: Average number of neighbors: 62.09617233276367
+2026-03-25 01:09:07.583 INFO: During training the following quantities will be reported: energy, forces
+2026-03-25 01:09:07.583 INFO: ===========MODEL DETAILS===========
+2026-03-25 01:09:07.602 INFO: Loading FOUNDATION model
+2026-03-25 01:09:07.602 INFO: Using filtered elements: [np.int64(3), np.int64(8), np.int64(40), np.int64(57)]
+2026-03-25 01:09:07.602 INFO: Model configuration extracted from foundation model
+2026-03-25 01:09:07.602 INFO: Using weighted loss function for fine-tuning
+2026-03-25 01:09:07.603 INFO: Message passing with hidden irreps 128x0e+128x1o)
+2026-03-25 01:09:07.603 INFO: 2 layers, each with correlation order: 3 (body order: 4) and spherical harmonics up to: l=3
+2026-03-25 01:09:07.603 INFO: Radial cutoff: 6.0 A (total receptive field for each atom: 12.0 A)
+2026-03-25 01:09:07.603 INFO: Distance transform for radial basis functions: Agnesi
+2026-03-25 01:09:08.884 INFO: Injecting LoRA layers with rank=5 and alpha=1.0
+2026-03-25 01:09:08.885 INFO: Original model has 848814 trainable parameters.
+2026-03-25 01:09:09.409 INFO: Model with LoRA has 885694 trainable parameters.
+2026-03-25 01:09:09.409 INFO: ===========OPTIMIZER INFORMATION===========
+2026-03-25 01:09:09.409 INFO: Using ADAM as parameter optimizer
+2026-03-25 01:09:09.409 INFO: Batch size: 4
+2026-03-25 01:09:09.409 INFO: Number of gradient updates: 480
+2026-03-25 01:09:09.409 INFO: Learning rate: 0.0005, weight decay: 5e-07
+2026-03-25 01:09:09.409 INFO: WeightedEnergyForcesLoss(energy_weight=1.000, forces_weight=5.000)
+2026-03-25 01:09:09.410 INFO: === Layer's learning rates ===
+2026-03-25 01:09:09.410 INFO: Param group 0: lr = 0.0005
+2026-03-25 01:09:09.410 INFO: Param group 1: lr = 0.0005
+2026-03-25 01:09:09.410 INFO: Param group 2: lr = 0.0005
+2026-03-25 01:09:09.410 INFO: Param group 3: lr = 0.0005
+2026-03-25 01:09:09.410 INFO: Param group 4: lr = 0.0005
+2026-03-25 01:09:09.411 WARNING: Cannot find checkpoint with tag 'mace_fps_split15_run-1' in './checkpoints'
+2026-03-25 01:09:09.411 INFO: Using gradient clipping with tolerance=10.000
+2026-03-25 01:09:09.411 INFO: 
+2026-03-25 01:09:09.411 INFO: ===========TRAINING===========
+2026-03-25 01:09:09.411 INFO: Started training, reporting errors on validation set
+2026-03-25 01:09:09.411 INFO: Loss metrics on validation set
+2026-03-25 01:09:10.347 INFO: Initial: head: Default, loss=0.12661459, RMSE_E_per_atom=  606.96 meV, RMSE_F=  166.17 meV / A
+2026-03-25 01:09:19.124 INFO: Epoch 0: head: Default, loss=0.11420640, RMSE_E_per_atom=  596.12 meV, RMSE_F=  142.46 meV / A
+2026-03-25 01:09:19.126 DEBUG: Saving checkpoint: ./checkpoints/mace_fps_split15_run-1_epoch-0.pt
+2026-03-25 01:09:25.371 INFO: Epoch 1: head: Default, loss=0.10425797, RMSE_E_per_atom=  584.93 meV, RMSE_F=  122.39 meV / A
+2026-03-25 01:09:25.372 DEBUG: Deleting old checkpoint file: ./checkpoints/mace_fps_split15_run-1_epoch-0.pt
+2026-03-25 01:09:25.373 DEBUG: Saving checkpoint: ./checkpoints/mace_fps_split15_run-1_epoch-1.pt
+2026-03-25 01:09:30.501 INFO: Epoch 2: head: Default, loss=0.09635903, RMSE_E_per_atom=  572.14 meV, RMSE_F=  107.79 meV / A
+2026-03-25 01:09:30.502 DEBUG: Deleting old checkpoint file: ./checkpoints/mace_fps_split15_run-1_epoch-1.pt
+2026-03-25 01:09:30.503 DEBUG: Saving checkpoint: ./checkpoints/mace_fps_split15_run-1_epoch-2.pt
+2026-03-25 01:09:35.630 INFO: Epoch 3: head: Default, loss=0.09011962, RMSE_E_per_atom=  557.67 meV, RMSE_F=   99.48 meV / A
+2026-03-25 01:09:35.631 DEBUG: Deleting old checkpoint file: ./checkpoints/mace_fps_split15_run-1_epoch-2.pt
+2026-03-25 01:09:35.632 DEBUG: Saving checkpoint: ./checkpoints/mace_fps_split15_run-1_epoch-3.pt
+2026-03-25 01:09:40.776 INFO: Epoch 4: head: Default, loss=0.08450660, RMSE_E_per_atom=  540.97 meV, RMSE_F=   95.27 meV / A
+2026-03-25 01:09:40.777 DEBUG: Deleting old checkpoint file: ./checkpoints/mace_fps_split15_run-1_epoch-3.pt
+2026-03-25 01:09:40.778 DEBUG: Saving checkpoint: ./checkpoints/mace_fps_split15_run-1_epoch-4.pt
+2026-03-25 01:09:45.932 INFO: Epoch 5: head: Default, loss=0.07896503, RMSE_E_per_atom=  522.05 meV, RMSE_F=   93.08 meV / A
+2026-03-25 01:09:45.934 DEBUG: Deleting old checkpoint file: ./checkpoints/mace_fps_split15_run-1_epoch-4.pt
+2026-03-25 01:09:45.935 DEBUG: Saving checkpoint: ./checkpoints/mace_fps_split15_run-1_epoch-5.pt
+2026-03-25 01:09:51.086 INFO: Epoch 6: head: Default, loss=0.07346225, RMSE_E_per_atom=  501.55 meV, RMSE_F=   91.98 meV / A
+2026-03-25 01:09:51.087 DEBUG: Deleting old checkpoint file: ./checkpoints/mace_fps_split15_run-1_epoch-5.pt
+2026-03-25 01:09:51.088 DEBUG: Saving checkpoint: ./checkpoints/mace_fps_split15_run-1_epoch-6.pt
+2026-03-25 01:09:56.254 INFO: Epoch 7: head: Default, loss=0.06810485, RMSE_E_per_atom=  480.02 meV, RMSE_F=   91.65 meV / A
+2026-03-25 01:09:56.255 DEBUG: Deleting old checkpoint file: ./checkpoints/mace_fps_split15_run-1_epoch-6.pt
+2026-03-25 01:09:56.256 DEBUG: Saving checkpoint: ./checkpoints/mace_fps_split15_run-1_epoch-7.pt
+2026-03-25 01:10:14.855 INFO: ===========VERIFYING SETTINGS===========
+2026-03-25 01:10:14.855 INFO: MACE version: 0.3.15
+2026-03-25 01:10:14.855 DEBUG: Configuration: Namespace(config=None, name='mace_fps_split15', seed=1, work_dir='.', log_dir='./logs', model_dir='.', checkpoints_dir='./checkpoints', results_dir='./results', downloads_dir='./downloads', device='cuda', default_dtype='float32', distributed=False, launcher='slurm', log_level='INFO', plot=True, plot_frequency=0, plot_interaction_e=False, error_table='PerAtomRMSE', model='MACE', r_max=5.0, radial_type='bessel', num_radial_basis=8, num_cutoff_basis=5, pair_repulsion=False, distance_transform='None', apply_cutoff=True, use_last_readout_only=False, use_embedding_readout=False, interaction='RealAgnosticResidualInteractionBlock', interaction_first='RealAgnosticResidualInteractionBlock', max_ell=3, correlation=3, use_reduced_cg=False, use_so3=False, use_agnostic_product=False, num_interactions=2, MLP_irreps='16x0e', radial_MLP='[64, 64, 64]', hidden_irreps='128x0e + 128x1o', edge_irreps=None, num_channels=128, max_L=1, gate='silu', kspace_cutoff_factor=1.5, atomic_multipoles_max_l=0, atomic_multipoles_smearing_width=1.0, field_feature_max_l=0, field_feature_widths='[1.0]', field_feature_norms=None, num_recursion_steps=1, field_si=False, include_electrostatic_self_interaction=False, add_local_electron_energy=False, quadrupole_feature_corrections=False, return_electrostatic_potentials=False, field_norm_factor=0.02, fixedpoint_update_config=None, field_readout_config=None, scaling='rms_forces_scaling', avg_num_neighbors=1, compute_avg_num_neighbors=True, compute_stress=False, compute_forces=True, compute_polarizability=False, compute_atomic_dipole=False, train_file='/home/mehuldarak/athena/fps_dftfe_data/split_15/fps_dftfe_split_15_train.extxyz', valid_file='/home/mehuldarak/athena/fps_dftfe_data/split_15/fps_dftfe_split_15_val.extxyz', valid_fraction=0.1, test_file=None, test_dir=None, multi_processed_test=False, num_workers=0, pin_memory=True, atomic_numbers=None, mean=None, std=None, statistics_file=None, les_arguments=None, E0s='{3:-190.7590256408,8:-442.9888796243,40:-1380.1817128081,57:-958.0774205521}', pseudolabel_replay=False, pseudolabel_replay_compute_stress=False, foundation_filter_elements=True, heads=None, multiheads_finetuning=True, foundation_head=None, weight_pt_head=1.0, real_pt_data_ratio_threshold=0.1, num_samples_pt=10000, force_mh_ft_lr=False, subselect_pt='random', filter_type_pt='none', allow_random_padding_pt=True, pt_train_file=None, pt_valid_file=None, foundation_model_elements=False, keep_isolated_atoms=False, lora=True, lora_rank=5, lora_alpha=1.0, energy_key='REF_energy', forces_key='REF_forces', virials_key='REF_virials', stress_key='REF_stress', dipole_key='dipole', polarizability_key='polarizability', head_key='head', charges_key='REF_charges', elec_temp_key='elec_temp', total_spin_key='total_spin', total_charge_key='total_charge', embedding_specs=None, skip_evaluate_heads='pt_head', loss='weighted', forces_weight=5.0, swa_forces_weight=100.0, energy_weight=1.0, swa_energy_weight=1000.0, virials_weight=1.0, swa_virials_weight=10.0, stress_weight=0.0, swa_stress_weight=10.0, dipole_weight=1.0, swa_dipole_weight=1.0, swa_polarizability_weight=1.0, polarizability_weight=1.0, config_type_weights='{"Default":1.0}', huber_delta=0.01, optimizer='adam', beta=0.9, beta1_schedulefree=0.9, beta2_schedulefree=0.98, batch_size=4, valid_batch_size=10, lr=0.01, swa_lr=0.001, weight_decay=5e-07, lr_params_factors='{"embedding_lr_factor": 1.0, "interactions_lr_factor": 1.0, "products_lr_factor": 1.0, "readouts_lr_factor": 1.0}', freeze=None, amsgrad=True, scheduler='ReduceLROnPlateau', lr_factor=0.8, scheduler_patience=50, lr_scheduler_gamma=0.9993, swa=False, start_swa=None, lbfgs=False, ema=False, ema_decay=0.99, max_num_epochs=120, patience=2048, foundation_model='/home/mehuldarak/MACE_models/universal_09072025/mace-omat-0-medium.model', foundation_model_kwargs='{}', foundation_model_readout=True, eval_interval=1, keep_checkpoints=False, save_all_checkpoints=False, restart_latest=True, save_cpu=False, clip_grad=10.0, dry_run=False, enable_cueq=False, only_cueq=False, enable_oeq=False, wandb=False, wandb_dir=None, wandb_project='', wandb_entity='', wandb_name='', wandb_log_hypers=['num_channels', 'max_L', 'correlation', 'lr', 'swa_lr', 'weight_decay', 'batch_size', 'max_num_epochs', 'start_swa', 'energy_weight', 'forces_weight'], key_specification=KeySpecification(info_keys={'energy': 'REF_energy', 'stress': 'REF_stress', 'virials': 'REF_virials', 'dipole': 'dipole', 'head': 'head', 'elec_temp': 'elec_temp', 'total_charge': 'total_charge', 'polarizability': 'polarizability', 'total_spin': 'total_spin'}, arrays_keys={'forces': 'REF_forces', 'charges': 'REF_charges'}))
+2026-03-25 01:10:14.873 INFO: CUDA version: 12.8, CUDA device: 0
+2026-03-25 01:10:14.897 DEBUG: Popen(['git', 'version'], cwd=/home/mehuldarak/athena/mace_fps_training, stdin=None, shell=False, universal_newlines=False)
+2026-03-25 01:10:14.898 DEBUG: Popen(['git', 'version'], cwd=/home/mehuldarak/athena/mace_fps_training, stdin=None, shell=False, universal_newlines=False)
+2026-03-25 01:10:14.901 DEBUG: sys.platform='linux', git_executable='git'
+2026-03-25 01:10:14.902 DEBUG: Popen(['git', 'cat-file', '--batch-check'], cwd=/home/mehuldarak/athena, stdin=<valid stream>, shell=False, universal_newlines=False)
+2026-03-25 01:10:14.903 DEBUG: Current Git commit: a6b661176b6b9feb0567915cba9df62cd0dab5ce
+2026-03-25 01:10:15.109 INFO: Using foundation model /home/mehuldarak/MACE_models/universal_09072025/mace-omat-0-medium.model as initial checkpoint.
+2026-03-25 01:10:15.110 WARNING: Using multiheads finetuning with a foundation model that is not a Materials Project model, need to provied a path to a pretraining file with --pt_train_file.
+2026-03-25 01:10:15.110 INFO: ===========LOADING INPUT DATA===========
+2026-03-25 01:10:15.110 INFO: Using heads: ['Default']
+2026-03-25 01:10:15.110 INFO: Using the key specifications to parse data:
+2026-03-25 01:10:15.110 INFO: Default: KeySpecification(info_keys={'energy': 'REF_energy', 'stress': 'REF_stress', 'virials': 'REF_virials', 'dipole': 'dipole', 'head': 'head', 'elec_temp': 'elec_temp', 'total_charge': 'total_charge', 'polarizability': 'polarizability', 'total_spin': 'total_spin'}, arrays_keys={'forces': 'REF_forces', 'charges': 'REF_charges'})
+2026-03-25 01:10:15.110 INFO: =============    Processing head Default     ===========
+2026-03-25 01:10:15.110 DEBUG: Loading training file: /home/mehuldarak/athena/fps_dftfe_data/split_15/fps_dftfe_split_15_train.extxyz
+2026-03-25 01:10:15.156 INFO: Training set 1/1 [energy: 16, stress: 0, virials: 0, dipole components: 0, head: 16, elec_temp: 0, total_charge: 0, polarizability: 0, total_spin: 0, forces: 16, charges: 0]
+2026-03-25 01:10:15.156 INFO: Total Training set [energy: 16, stress: 0, virials: 0, dipole components: 0, head: 16, elec_temp: 0, total_charge: 0, polarizability: 0, total_spin: 0, forces: 16, charges: 0]
+2026-03-25 01:10:15.174 INFO: Validation set 1/1 [energy: 4, stress: 0, virials: 0, dipole components: 0, head: 4, elec_temp: 0, total_charge: 0, polarizability: 0, total_spin: 0, forces: 4, charges: 0]
+2026-03-25 01:10:15.174 INFO: Total Validation set [energy: 4, stress: 0, virials: 0, dipole components: 0, head: 4, elec_temp: 0, total_charge: 0, polarizability: 0, total_spin: 0, forces: 4, charges: 0]
+2026-03-25 01:10:15.174 INFO: Total number of configurations: train=16, valid=4, tests=[],
+2026-03-25 01:10:15.174 WARNING: Validation batch size (10) is larger than the number of validation data (4)
+2026-03-25 01:10:15.175 INFO: Atomic Numbers used: [np.int64(3), np.int64(8), np.int64(40), np.int64(57)]
+2026-03-25 01:10:15.175 INFO: Isolated Atomic Energies (E0s) not in training file, using command line argument
+2026-03-25 01:10:15.176 INFO: Atomic Energies used (z: eV) for head Default: {3: -190.7590256408, 8: -442.9888796243, 40: -1380.1817128081, 57: -958.0774205521}
+2026-03-25 01:10:15.176 INFO: Processing datasets for head 'Default'
+2026-03-25 01:10:15.370 DEBUG: Successfully loaded dataset from ASE files: ['/home/mehuldarak/athena/fps_dftfe_data/split_15/fps_dftfe_split_15_train.extxyz']
+2026-03-25 01:10:15.370 INFO: Combining 1 list datasets for head 'Default'
+2026-03-25 01:10:15.409 DEBUG: Successfully loaded validation dataset from ASE files: ['/home/mehuldarak/athena/fps_dftfe_data/split_15/fps_dftfe_split_15_val.extxyz']
+2026-03-25 01:10:15.410 INFO: Combining 1 list datasets for head 'Default_valid'
+2026-03-25 01:10:15.410 INFO: Combined validation datasets for Default
+2026-03-25 01:10:15.410 INFO: Head 'Default' training dataset size: 16
+2026-03-25 01:10:15.410 INFO: Computing average number of neighbors
+2026-03-25 01:10:15.439 INFO: Average number of neighbors: 62.09617233276367
+2026-03-25 01:10:15.439 INFO: During training the following quantities will be reported: energy, forces
+2026-03-25 01:10:15.439 INFO: ===========MODEL DETAILS===========
+2026-03-25 01:10:15.457 INFO: Loading FOUNDATION model
+2026-03-25 01:10:15.458 INFO: Using filtered elements: [np.int64(3), np.int64(8), np.int64(40), np.int64(57)]
+2026-03-25 01:10:15.458 INFO: Model configuration extracted from foundation model
+2026-03-25 01:10:15.458 INFO: Using weighted loss function for fine-tuning
+2026-03-25 01:10:15.458 INFO: Message passing with hidden irreps 128x0e+128x1o)
+2026-03-25 01:10:15.458 INFO: 2 layers, each with correlation order: 3 (body order: 4) and spherical harmonics up to: l=3
+2026-03-25 01:10:15.458 INFO: Radial cutoff: 6.0 A (total receptive field for each atom: 12.0 A)
+2026-03-25 01:10:15.458 INFO: Distance transform for radial basis functions: Agnesi
+2026-03-25 01:10:16.707 INFO: Injecting LoRA layers with rank=5 and alpha=1.0
+2026-03-25 01:10:16.708 INFO: Original model has 848814 trainable parameters.
+2026-03-25 01:10:17.228 INFO: Model with LoRA has 885694 trainable parameters.
+2026-03-25 01:10:17.228 INFO: ===========OPTIMIZER INFORMATION===========
+2026-03-25 01:10:17.228 INFO: Using ADAM as parameter optimizer
+2026-03-25 01:10:17.228 INFO: Batch size: 4
+2026-03-25 01:10:17.228 INFO: Number of gradient updates: 480
+2026-03-25 01:10:17.228 INFO: Learning rate: 0.01, weight decay: 5e-07
+2026-03-25 01:10:17.228 INFO: WeightedEnergyForcesLoss(energy_weight=1.000, forces_weight=5.000)
+2026-03-25 01:10:17.229 INFO: === Layer's learning rates ===
+2026-03-25 01:10:17.229 INFO: Param group 0: lr = 0.01
+2026-03-25 01:10:17.229 INFO: Param group 1: lr = 0.01
+2026-03-25 01:10:17.229 INFO: Param group 2: lr = 0.01
+2026-03-25 01:10:17.229 INFO: Param group 3: lr = 0.01
+2026-03-25 01:10:17.229 INFO: Param group 4: lr = 0.01
+2026-03-25 01:10:17.230 WARNING: No SWA checkpoint found, while SWA is enabled. Compare the swa_start parameter and the latest checkpoint.
+2026-03-25 01:10:17.230 INFO: Loading checkpoint: ./checkpoints/mace_fps_split15_run-1_epoch-7.pt
+2026-03-25 01:10:17.270 INFO: Using gradient clipping with tolerance=10.000
+2026-03-25 01:10:17.270 INFO: 
+2026-03-25 01:10:17.270 INFO: ===========TRAINING===========
+2026-03-25 01:10:17.270 INFO: Started training, reporting errors on validation set
+2026-03-25 01:10:17.270 INFO: Loss metrics on validation set
+2026-03-25 01:10:18.209 INFO: Initial: head: Default, loss=0.06803104, RMSE_E_per_atom=  479.72 meV, RMSE_F=   91.65 meV / A
+2026-03-25 01:10:26.969 INFO: Epoch 7: head: Default, loss=0.06258602, RMSE_E_per_atom=  456.44 meV, RMSE_F=   91.66 meV / A
+2026-03-25 01:10:26.970 DEBUG: Saving checkpoint: ./checkpoints/mace_fps_split15_run-1_epoch-7.pt
+2026-03-25 01:10:33.213 INFO: Epoch 8: head: Default, loss=0.05701701, RMSE_E_per_atom=  431.00 meV, RMSE_F=   91.98 meV / A
+2026-03-25 01:10:33.214 DEBUG: Deleting old checkpoint file: ./checkpoints/mace_fps_split15_run-1_epoch-7.pt
+2026-03-25 01:10:33.215 DEBUG: Saving checkpoint: ./checkpoints/mace_fps_split15_run-1_epoch-8.pt
+2026-03-25 01:10:38.338 INFO: Epoch 9: head: Default, loss=0.05155845, RMSE_E_per_atom=  404.60 meV, RMSE_F=   92.23 meV / A
+2026-03-25 01:10:38.339 DEBUG: Deleting old checkpoint file: ./checkpoints/mace_fps_split15_run-1_epoch-8.pt
+2026-03-25 01:10:38.340 DEBUG: Saving checkpoint: ./checkpoints/mace_fps_split15_run-1_epoch-9.pt
