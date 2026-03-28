@@ -1,0 +1,7 @@
+Rank,PC1,PC2,r_influence,FPS_other_covered,Pool_covered,Origin,Stem
+1,0.07158284,-0.007471936,0.025370450110759994,1,300,pool,Li_111_slab__LLZO_110_Zr_bestgap_2.50A_r_T1100K_4700.cif
+2,-0.08536983,-0.014914235,0.019552066364677035,0,89,pool,Li_100_slab__LLZO_010_La_order0_off_bestgap_2.50A_r_T1100K_4800.cif
+3,-0.018152365,0.034135547,0.029272298768793007,1,0,burov_tests,burov_tests__Li_LLZO_110_ct-Li5La2Zr4O8_opp-Li3La2O10_side-bottom_var01.cif
+4,0.0041153138,-0.013990721,0.020722759426485472,3,292,pool,Li_110_slab__LLZO_010_La_order0_off_bestgap_2.00A_r_T1100K_2800.cif
+5,0.0294647,0.015166318,0.020722759426485472,2,62,burov_tests,burov_tests__Li_LLZO_011_ct-Li6La4O9_opp-Li3La1O5_side-bottom_var01.cif
+6,-0.05315581,0.0051677898,0.019552066364677035,2,179,pool,Li_100_slab__LLZO_011_La_code71_sto_bestgap_3.00A_r_T550K_1600.cif
