@@ -1,1 +1,4 @@
 *.traj
+*.extxyz
+*.model
+*.log
