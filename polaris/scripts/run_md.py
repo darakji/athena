@@ -27,7 +27,7 @@ from mace.calculators import MACECalculator
 # =======================
 
 in_dir = "/eagle/DFTCalculations/mehul/ml/athena/polaris/remaining_slab/cifs"
-out_base = "/eagle/DFTCalculations/mehul/ml/athena/polaris/remaining_slab_md_unfreeze_li"
+out_base = "/eagle/DFTCalculations/mehul/ml/athena/polaris/md_from_mace_fps_split17_it0"
 
 cif_out  = os.path.join(out_base, "cifs")
 traj_out = os.path.join(out_base, "traj")
@@ -42,7 +42,7 @@ os.makedirs(log_out, exist_ok=True)
 # MACE model (same role as Script 1)
 # =======================
 
-model_path = "/eagle/DFTCalculations/mehul/ml/MACE_models/mace-omat-0-medium.model"
+model_path = "/eagle/DFTCalculations/mehul/ml/MACE_models/mace_fps_split17_run-1.model"
 
 print("Loading MACE calculator...", flush=True)
 
@@ -50,7 +50,7 @@ calc = MACECalculator(
     model_paths=model_path,
     device="cuda",
     default_dtype="float32",
-    batch_size=4,
+    batch_size=8,
 )
 
 
@@ -61,7 +61,7 @@ calc = MACECalculator(
 TEMPERATURES = [550, 1100]    # K
 TIMESTEP_FS = 1.0
 NSTEPS_MD = 5000
-SNAPSHOT_INTERVAL = 25
+SNAPSHOT_INTERVAL = 100
 
 FRICTION = 0.001 / units.fs
 

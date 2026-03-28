@@ -20,7 +20,7 @@ export MKL_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
 
-OUT_BASE=/eagle/DFTCalculations/mehul/ml/athena/polaris/li_llzo_md_polaris
+OUT_BASE=/eagle/DFTCalculations/mehul/ml/athena/polaris/md_from_mace_fps_split17_it0
 mkdir -p ${OUT_BASE}/logs
 
 mapfile -t CIFS < /eagle/DFTCalculations/mehul/ml/athena/group_gpu1.txt
