@@ -1,0 +1,47 @@
+set SOLVER MODE = GS
+set VERBOSITY = 4
+set MEM OPT MODE = true
+set USE GPU = true
+subsection Geometry
+  set NATOMS=448
+  set NATOM TYPES=4
+  set ATOMIC COORDINATES FILE      = coordinates.inp           
+  set DOMAIN VECTORS FILE = domainVectors.inp 
+  subsection Optimization
+    set CELL STRESS              = false
+    set ION FORCE = true
+  end
+end
+
+
+subsection Boundary conditions
+  set PERIODIC1                       = true
+  set PERIODIC2                       = true
+  set PERIODIC3                       = false
+  set APPLY ZERO FLUX BOUNDARY CONDITION = true
+end
+
+subsection Finite element mesh parameters
+  set POLYNOMIAL ORDER=7
+  subsection Auto mesh generation parameters
+    set MESH SIZE AROUND ATOM  = 1.2
+    set ATOM BALL RADIUS                  = 8.0
+  end
+end
+
+
+subsection DFT functional parameters
+  set EXCHANGE CORRELATION TYPE   = GGA-PBE
+  set PSEUDOPOTENTIAL CALCULATION = true  
+  set PSEUDOPOTENTIAL FILE NAMES LIST = pseudo.inp
+end
+
+subsection SCF parameters
+  set TEMPERATURE                      = 500
+  set TOLERANCE                        = 5e-6
+  set ADAPT ANDERSON MIXING PARAMETER = true
+  set MIXING METHOD = ANDERSON_WITH_RESTA
+  subsection Eigen-solver parameters
+  set USE SINGLE PREC CHEBY                                = true
+  end
+end

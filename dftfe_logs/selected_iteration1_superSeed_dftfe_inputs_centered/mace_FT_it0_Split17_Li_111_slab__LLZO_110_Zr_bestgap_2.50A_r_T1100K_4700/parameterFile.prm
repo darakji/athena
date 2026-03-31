@@ -1,0 +1,37 @@
+set SOLVER MODE = GS
+set VERBOSITY = 2
+set USE GPU = true
+
+subsection Geometry
+  set NATOMS = 1402
+  set NATOM TYPES = 4
+  set ATOMIC COORDINATES FILE = coordinates.inp
+  set DOMAIN VECTORS FILE = domainVectors.inp
+end
+
+subsection Boundary conditions
+  set PERIODIC1 = true
+  set PERIODIC2 = true
+  set PERIODIC3 = false
+end
+
+subsection DFT functional parameters
+  set EXCHANGE CORRELATION TYPE = GGA-PBE
+  set PSEUDOPOTENTIAL CALCULATION = true
+  set PSEUDOPOTENTIAL FILE NAMES LIST = pseudo.inp
+end
+
+subsection SCF parameters
+  set MIXING PARAMETER = 0.2
+  set MAXIMUM ITERATIONS = 120
+  set TOLERANCE = 1e-5
+  set TEMPERATURE = 500
+end
+
+subsection Finite element mesh parameters
+  set POLYNOMIAL ORDER = 7
+  subsection Auto mesh generation parameters
+    set ATOM BALL RADIUS = 8
+    set MESH SIZE AROUND ATOM = 1.2
+  end
+end
