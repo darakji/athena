@@ -1,3 +1,78 @@
+"""
+Li–LLZO Lattice Matching and Supercell Generation
+
+This script performs exhaustive in-plane lattice matching between Li slabs and
+LLZO slabs by searching over possible supercell combinations. For each Li–LLZO
+pair, it:
+
+1. Generates supercells up to a configurable repetition limit.
+2. Computes lattice mismatch along a and b directions.
+3. Selects the optimal supercell pair minimizing maximum mismatch.
+4. Applies anisotropic scaling ONLY to the Li slab to match LLZO.
+5. Writes the resulting structures to disk.
+6. Logs all results in a structured Markdown report.
+
+--------------------------------------------------
+Core Idea
+--------------------------------------------------
+Given two slab structures (Li and LLZO), we want to find:
+
+    (m, n) × Li  and  (p, q) × LLZO
+
+such that:
+    a_Li ≈ a_LLZO
+    b_Li ≈ b_LLZO
+
+We minimize:
+    max(mismatch_a, mismatch_b)
+
+and then deform Li to exactly match LLZO lattice.
+
+--------------------------------------------------
+Inputs
+--------------------------------------------------
+- Directory of Li slab CIF files
+- Directory of LLZO slab CIF files
+
+--------------------------------------------------
+Outputs
+--------------------------------------------------
+1. For each Li–LLZO pair:
+   - Scaled Li supercell (anisotropically strained)
+   - Fixed LLZO supercell
+
+2. Markdown report:
+   - Supercell choices
+   - Lattice mismatches (%)
+   - Scaling factors
+
+--------------------------------------------------
+Assumptions
+--------------------------------------------------
+- Slabs are already oriented correctly (matching interface directions).
+- Only in-plane matching (a, b axes); c-axis is unchanged.
+- Strain is applied ONLY to Li (LLZO treated as substrate).
+- No atomic relaxation is performed (structures are unrelaxed).
+
+--------------------------------------------------
+Typical Use Case
+--------------------------------------------------
+Preprocessing step for:
+- Interface generation
+- MLMD dataset creation
+- DFT/ML interface calculations
+
+--------------------------------------------------
+Dependencies
+--------------------------------------------------
+- ASE (Atomic Simulation Environment)
+- NumPy
+
+--------------------------------------------------
+Author
+--------------------------------------------------
+Mehul Darak et al.
+"""
 import os
 import numpy as np
 from itertools import product
