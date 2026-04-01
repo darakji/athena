@@ -85,7 +85,7 @@ from ase.build import make_supercell
 li_dir = "/home/mehuldarak/athena/li_slabs"
 llzo_dir = "/home/mehuldarak/athena/llzo_slabs"
 
-out_base = "li_and_llzo_unrelaxed_seperate"
+out_base = "li_and_llzo_big_relaxed_seperate"
 log_file = "li_llzo_lattice_matching_report.md"
 
 os.makedirs(out_base, exist_ok=True)
