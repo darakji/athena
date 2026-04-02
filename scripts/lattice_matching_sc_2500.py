@@ -2,7 +2,8 @@ import os
 import numpy as np
 from itertools import product
 from ase.io import read, write
-from ase.build import make_supercell
+from ase.geometry import cell_to_cellpar
+from ase.build import rotate
 
 # ==================================================
 # Paths
@@ -10,162 +11,212 @@ from ase.build import make_supercell
 li_dir = "/home/mehuldarak/athena/li_slabs"
 llzo_dir = "/home/mehuldarak/athena/llzo_slabs"
 
-out_base = "/home/mehuldarak/athena/li_and_llzo_final_interfaces_2500_3000"
-log_file = "/home/mehuldarak/athena/li_llzo_lattice_matching_report_2500_3000.md"
+out_base = "/home/mehuldarak/athena/li_and_llzo_unrelaxed_seperate_2500_3000"
+log_file = "/home/mehuldarak/athena/li_and_llzo_unrelaxed_seperate_2500_3000/li_llzo_lattice_matching_report_2500_3000.md"
 
 os.makedirs(out_base, exist_ok=True)
 
 # ==================================================
-# Parameters
+# Params
 # ==================================================
 MAX_REPEAT = 5
-MAX_MISMATCH = 0.1  # 5%
-
+MAX_ALLOWED_MISMATCH = 0.10
 TARGET_MIN_ATOMS = 2000
 TARGET_MAX_ATOMS = 3000
+BUFFER = 2.0
+
 
 # ==================================================
-# Collect CIF files
+# 🔥 CRITICAL: Align slab normal to z
+# ==================================================
+def align_slab_to_z(atoms):
+    atoms = atoms.copy()
+
+    cell = atoms.cell.array
+
+    # pick longest lattice vector → likely vacuum direction
+    lengths = [np.linalg.norm(v) for v in cell]
+    normal_idx = np.argmax(lengths)
+
+    normal = cell[normal_idx]
+
+    # normalize
+    normal = normal / np.linalg.norm(normal)
+
+    # rotate normal → z
+    z = np.array([0, 0, 1.0])
+
+    # cross + angle
+    axis = np.cross(normal, z)
+    angle = np.arccos(np.clip(np.dot(normal, z), -1, 1)) * 180 / np.pi
+
+    if np.linalg.norm(axis) > 1e-6:
+        rotate(atoms, angle, axis, rotate_cell=True)
+
+    return atoms
+
+
+# ==================================================
+# Remove vacuum AFTER alignment
+# ==================================================
+def make_dense(atoms):
+    pos = atoms.positions
+
+    zmin = pos[:, 2].min()
+    zmax = pos[:, 2].max()
+
+    thickness = zmax - zmin
+
+    pos[:, 2] -= zmin
+    atoms.positions = pos
+
+    a = atoms.cell[0]
+    b = atoms.cell[1]
+
+    atoms.set_cell([a, b, [0, 0, thickness + BUFFER]], scale_atoms=False)
+    atoms.wrap()
+
+    return atoms
+
+
+def compact_z(atoms):
+    pos = atoms.positions
+    zmin = pos[:, 2].min()
+    zmax = pos[:, 2].max()
+
+    thickness = zmax - zmin
+
+    pos[:, 2] -= zmin
+    atoms.positions = pos
+
+    cell = atoms.cell.copy()
+    cell[2] = [0, 0, thickness + BUFFER]
+
+    atoms.set_cell(cell, scale_atoms=False)
+    atoms.wrap()
+
+    return atoms
+
+
+# ==================================================
+# Files
 # ==================================================
 li_files = sorted(f for f in os.listdir(li_dir) if f.endswith(".cif"))
 llzo_files = sorted(f for f in os.listdir(llzo_dir) if f.endswith(".cif"))
 
 # ==================================================
-# Markdown log header
+# Log
 # ==================================================
 with open(log_file, "w") as f:
-    f.write("# Li–LLZO Final Interface Report\n\n")
-    f.write(
-        "| Li slab | LLZO slab | Li supercell | LLZO supercell | "
-        "Z repeat | Total atoms | a mismatch (%) | b mismatch (%) | "
-        "Li scale a | Li scale b |\n"
-    )
-    f.write(
-        "|--------|-----------|--------------|----------------|-----------|"
-        "-------------|---------------|---------------|-----------|-----------|\n"
-    )
+    f.write("# Li–LLZO Lattice Matching Report (≤10%)\n\n")
+
 
 # ==================================================
-# Main loop
+# Main
 # ==================================================
 for li_name, llzo_name in product(li_files, llzo_files):
 
     li = read(os.path.join(li_dir, li_name))
     llzo = read(os.path.join(llzo_dir, llzo_name))
 
+    # 🔥 ALIGN FIRST (THIS WAS MISSING)
+    li = align_slab_to_z(li)
+    llzo = align_slab_to_z(llzo)
+
+    # remove vacuum
+    li = make_dense(li)
+    llzo = make_dense(llzo)
+
     best = None
 
-    # --------------------------------------------------
-    # STEP 1: Find best lattice match (1–5, <5%)
-    # --------------------------------------------------
     for li_i, li_j, llzo_i, llzo_j in product(
         range(1, MAX_REPEAT + 1),
         range(1, MAX_REPEAT + 1),
         range(1, MAX_REPEAT + 1),
         range(1, MAX_REPEAT + 1),
     ):
-        li_sc_tmp = make_supercell(li, np.diag([li_i, li_j, 1]))
-        llzo_sc_tmp = make_supercell(llzo, np.diag([llzo_i, llzo_j, 1]))
 
-        cell_li = li_sc_tmp.cell.array
-        cell_llzo = llzo_sc_tmp.cell.array
+        li_tmp = li.repeat((li_i, li_j, 1))
+        llzo_tmp = llzo.repeat((llzo_i, llzo_j, 1))
 
-        a_li, b_li = np.linalg.norm(cell_li[0]), np.linalg.norm(cell_li[1])
-        a_llzo, b_llzo = np.linalg.norm(cell_llzo[0]), np.linalg.norm(cell_llzo[1])
+        a_li = np.linalg.norm(li_tmp.cell[0])
+        b_li = np.linalg.norm(li_tmp.cell[1])
+        a_llzo = np.linalg.norm(llzo_tmp.cell[0])
+        b_llzo = np.linalg.norm(llzo_tmp.cell[1])
 
         mismatch_a = abs(a_li - a_llzo) / max(a_li, a_llzo)
         mismatch_b = abs(b_li - b_llzo) / max(b_li, b_llzo)
 
-        # physics filter
-        if mismatch_a > MAX_MISMATCH or mismatch_b > MAX_MISMATCH:
+        if mismatch_a > MAX_ALLOWED_MISMATCH or mismatch_b > MAX_ALLOWED_MISMATCH:
             continue
 
         score = max(mismatch_a, mismatch_b)
 
+        base_atoms = len(li_tmp) + len(llzo_tmp)
+
+        z_repeat = max(1, TARGET_MIN_ATOMS // base_atoms)
+
+        total_atoms = base_atoms * z_repeat
+
+        if total_atoms > TARGET_MAX_ATOMS:
+            continue
+
         if best is None or score < best[0]:
             best = (
                 score,
-                (li_i, li_j, 1),
-                (llzo_i, llzo_j, 1),
+                (li_i, li_j),
+                (llzo_i, llzo_j),
                 a_li,
                 b_li,
                 a_llzo,
                 b_llzo,
                 mismatch_a,
-                mismatch_b
+                mismatch_b,
+                z_repeat,
+                total_atoms
             )
 
     if best is None:
-        print(f"[SKIPPED] No good match for {li_name} + {llzo_name}")
+        print(f"[FILTERED] {li_name} + {llzo_name}")
         continue
 
-    _, li_rep, llzo_rep, a_li, b_li, a_llzo, b_llzo, mismatch_a, mismatch_b = best
+    _, li_rep, llzo_rep, a_li, b_li, a_llzo, b_llzo, ma, mb, zrep, tot = best
 
-    # --------------------------------------------------
-    # STEP 2: Build matched interface
-    # --------------------------------------------------
-    li_sc = make_supercell(li, np.diag(li_rep))
-    llzo_sc = make_supercell(llzo, np.diag(llzo_rep))
+    li_sc = li.repeat((li_rep[0], li_rep[1], 1))
+    llzo_sc = llzo.repeat((llzo_rep[0], llzo_rep[1], 1))
 
     # scale Li
-    cell_li = li_sc.cell.array.copy()
     scale_a = a_llzo / a_li
     scale_b = b_llzo / b_li
 
-    cell_li[0] *= scale_a
-    cell_li[1] *= scale_b
+    cell = li_sc.cell.copy()
+    cell[0] *= scale_a
+    cell[1] *= scale_b
 
-    li_sc.set_cell(cell_li, scale_atoms=True)
+    li_sc.set_cell(cell, scale_atoms=True)
 
-    # --------------------------------------------------
-    # STEP 3: Auto-scale in Z to reach 2000–3000 atoms
-    # --------------------------------------------------
-    base_atoms = len(li_sc) + len(llzo_sc)
+    # match cell
+    li_sc.set_cell(llzo_sc.cell, scale_atoms=False)
 
-    z_repeat = 1
-    while base_atoms * z_repeat < TARGET_MIN_ATOMS:
-        z_repeat += 1
+    # repeat z
+    li_sc = li_sc.repeat((1, 1, zrep))
+    llzo_sc = llzo_sc.repeat((1, 1, zrep))
 
-    # if overshoot too much, step back
-    if base_atoms * z_repeat > TARGET_MAX_ATOMS:
-        z_repeat -= 1
+    # 🔥 FINAL compact
+    li_sc = compact_z(li_sc)
+    llzo_sc = compact_z(llzo_sc)
 
-    z_repeat = max(1, z_repeat)
-
-    li_sc = make_supercell(li_sc, np.diag([1, 1, z_repeat]))
-    llzo_sc = make_supercell(llzo_sc, np.diag([1, 1, z_repeat]))
-
-    total_atoms = len(li_sc) + len(llzo_sc)
-
-    # --------------------------------------------------
-    # STEP 4: Save
-    # --------------------------------------------------
+    # save
     li_tag = os.path.splitext(li_name)[0]
     llzo_tag = os.path.splitext(llzo_name)[0]
 
-    li_rep_str = f"{li_rep[0]}x{li_rep[1]}x{li_rep[2]}"
-    llzo_rep_str = f"{llzo_rep[0]}x{llzo_rep[1]}x{llzo_rep[2]}"
+    folder = os.path.join(out_base, f"{li_tag}__{llzo_tag}")
+    os.makedirs(folder, exist_ok=True)
 
-    combo_dir = os.path.join(out_base, f"{li_tag}__{llzo_tag}")
-    os.makedirs(combo_dir, exist_ok=True)
+    write(os.path.join(folder,
+        f"{li_tag}__sc_{li_rep[0]}x{li_rep[1]}x1__scaled_to_{llzo_tag}.cif"), li_sc)
 
-    li_out = f"{li_tag}__sc_{li_rep_str}_z{z_repeat}__scaled.cif"
-    llzo_out = f"{llzo_tag}__sc_{llzo_rep_str}_z{z_repeat}__fixed.cif"
+    write(os.path.join(folder,
+        f"{llzo_tag}__sc_{llzo_rep[0]}x{llzo_rep[1]}x1__fixed.cif"), llzo_sc)
 
-    write(os.path.join(combo_dir, li_out), li_sc)
-    write(os.path.join(combo_dir, llzo_out), llzo_sc)
-
-    # --------------------------------------------------
-    # STEP 5: Log
-    # --------------------------------------------------
-    with open(log_file, "a") as f:
-        f.write(
-            f"| {li_name} | {llzo_name} | {li_rep} | {llzo_rep} | "
-            f"{z_repeat} | {total_atoms} | "
-            f"{mismatch_a*100:.3f} | {mismatch_b*100:.3f} | "
-            f"{scale_a:.5f} | {scale_b:.5f} |\n"
-        )
-
-print("Done: clean interfaces + size-controlled systems generated.")
-print(f"Report: {log_file}")
-print(f"Structures: {out_base}/")
+    print(f"[OK] {li_name} + {llzo_name}")

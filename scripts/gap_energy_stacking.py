@@ -6,9 +6,9 @@ from mace.calculators import MACECalculator
 # ==================================================
 # Base paths
 # ==================================================
-IN_BASE = "/home/mehuldarak/athena/li_and_llzo_relaxed_seperate"
-OUT_BASE = "/home/mehuldarak/athena/li_llzo_unrelaxed_stacking"
-LOG_FILE = "/home/mehuldarak/athena/li_llzo_gap_scan_all.md"
+IN_BASE = "/home/mehuldarak/athena/li_and_llzo_final_interfaces_2500_3000"
+OUT_BASE = "/home/mehuldarak/athena/li_llzo_unrelaxed_stacking_2500_3000"
+LOG_FILE = "/home/mehuldarak/athena/li_llzo_gap_scan_all_2500_3000.md"
 
 os.makedirs(OUT_BASE, exist_ok=True)
 
@@ -17,8 +17,7 @@ os.makedirs(OUT_BASE, exist_ok=True)
 # ==================================================
 calc = MACECalculator(
     model_paths=[
-        "/home/mehuldarak/MACE_models/universal_09072025/"
-        "2023-12-03-mace-128-L1_epoch-199.model"
+       "/home/mehuldarak/MACE_models/universal_09072025/mace-omat-0-medium.model"
     ],
     device="cuda",      # change to cpu if needed
     default_dtype="float32",
